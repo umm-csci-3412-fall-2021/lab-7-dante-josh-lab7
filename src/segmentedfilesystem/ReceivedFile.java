@@ -6,7 +6,6 @@ import segmentedfilesystem.Packets.DataPacket;
 import segmentedfilesystem.Packets.HeaderPacket;
 
 public class ReceivedFile {
-	protected byte fileId;
 	protected String fileName;
 	protected SortedMap<Integer, byte[]> packets;
 	protected boolean allHere;
@@ -14,8 +13,7 @@ public class ReceivedFile {
 	protected int counter;
 
 	//Constructor
-	public ReceivedFile(byte fileId) {
-		this.fileId = fileId;
+	public ReceivedFile() {
 		packets = new TreeMap<>();
 		allHere = false;
 	}

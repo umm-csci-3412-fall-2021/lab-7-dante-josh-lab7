@@ -30,7 +30,7 @@ public class FileRetriever {
 			//Create empty datagram packet to send to server
 			DatagramPacket packet = new DatagramPacket(buf, buf.length, server, port);
 
-			//Send empty packet so sever
+			//Send empty packet to server
 			//This tells the server to start sending files to us
 			socket.send(packet);
 		} catch(IOException e) {
