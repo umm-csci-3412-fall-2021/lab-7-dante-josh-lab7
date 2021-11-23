@@ -8,12 +8,12 @@ import segmentedfilesystem.Packets.DataPacket;
 
 public class PacketManager {
 	//HashMap to be used to map packets to ReceivedFile objects
-	protected HashMap<String, ReceivedFile> fileIds;
+	protected HashMap<String, ReceivedFile> fileIdToFile;
 	
 	//Constructor for PacketManager
 	public PacketManager() {
 		//Initialize HashMap
-		fileIds = new HashMap<>();
+		fileIdToFile = new HashMap<>();
 	}
 	
 	//This method adds a packet to a ReceivedFile object
@@ -29,17 +29,17 @@ public class PacketManager {
 			String fileId = headerPacket.getFileId() + "";
 
 			//Check if the fileId already has a ReceivedFile object created for it
-			if(!fileIds.containsKey(fileId)) {
+			if(!fileIdToFile.containsKey(fileId)) {
 				//If there is no ReceivedFile object associated with the fileId, create one
 				ReceivedFile newFile = new ReceivedFile();
 				//Add the header packet to the received file object
 				newFile.addHeaderPacket(headerPacket);
 				//Put the received file object in the hash map
-				fileIds.put(fileId, newFile);
+				fileIdToFile.put(fileId, newFile);
 			}
 			else {
 				//If there already is a received file object associated with the file id, add the header packet to the object
-				fileIds.get(fileId).addHeaderPacket(headerPacket);
+				fileIdToFile.get(fileId).addHeaderPacket(headerPacket);
 			}
 		}
 		else {
@@ -48,13 +48,13 @@ public class PacketManager {
 			//Get fileId of the packet
 			String fileId = dataPacket.getFileId() + "";
 			//Same process as header packet but with data packet
-			if(!fileIds.containsKey(fileId)) {
+			if(!fileIdToFile.containsKey(fileId)) {
 				ReceivedFile newFile = new ReceivedFile();
 				newFile.addDataPacket(dataPacket);
-				fileIds.put(fileId, newFile);
+				fileIdToFile.put(fileId, newFile);
 			}
 			else {
-				fileIds.get(fileId).addDataPacket(dataPacket);
+				fileIdToFile.get(fileId).addDataPacket(dataPacket);
 			}
 		}
 	}
@@ -64,7 +64,7 @@ public class PacketManager {
 		ArrayList<Boolean> allHere = new ArrayList<>();
 
 		//Go through every file object in the HashMap
-		for(ReceivedFile file : fileIds.values()) {
+		for(ReceivedFile file : fileIdToFile.values()) {
 			//Check if that file is complete
 			if(file.isAllHere()) {
 				allHere.add(true);
@@ -85,7 +85,7 @@ public class PacketManager {
 	
 	//Write files in the HashMap to disk
 	public void writeAllFiles() {
-		for(ReceivedFile file : fileIds.values()) {
+		for(ReceivedFile file : fileIdToFile.values()) {
 			file.writeToFile();
 			System.out.println("Wrote " + file.fileName);
 		}
