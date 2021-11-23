@@ -87,7 +87,7 @@ public class PacketManager {
 	public void writeAllFiles() {
 		for(ReceivedFile file : fileIds.values()) {
 			file.writeToFile();
-			System.out.println("Wrote a File");
+			System.out.println("Wrote " + file.fileName);
 		}
 	}
 }
