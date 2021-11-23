@@ -31,7 +31,7 @@ public class PacketManager {
 			//Check if the fileId already has a ReceivedFile object created for it
 			if(!fileIds.containsKey(fileId)) {
 				//If there is no ReceivedFile object associated with the fileId, create one
-				ReceivedFile newFile = new ReceivedFile(headerPacket.getFileId());
+				ReceivedFile newFile = new ReceivedFile();
 				//Add the header packet to the received file object
 				newFile.addHeaderPacket(headerPacket);
 				//Put the received file object in the hash map
@@ -49,7 +49,7 @@ public class PacketManager {
 			String fileId = dataPacket.getFileId() + "";
 			//Same process as header packet but with data packet
 			if(!fileIds.containsKey(fileId)) {
-				ReceivedFile newFile = new ReceivedFile(dataPacket.getFileId());
+				ReceivedFile newFile = new ReceivedFile();
 				newFile.addDataPacket(dataPacket);
 				fileIds.put(fileId, newFile);
 			}
