@@ -1,25 +1,50 @@
 package segmentedfilesystem;
-
+import java.io.IOException;
+import java.net.*;
 public class FileRetriever {
-
+	private InetAddress server;
+	private int port;
+	
+	//Constructor for FileRetriever
 	public FileRetriever(String server, int port) {
-        // Save the server and port for use in `downloadFiles()`
-        //...
-	}
+		//Save port number
+                this.port = port;
 
-	public void downloadFiles() {
-        // Do all the heavy lifting here.
-        // This should
-        //   * Connect to the server
-        //   * Download packets in some sort of loop
-        //   * Handle the packets as they come in by, e.g.,
-        //     handing them to some PacketManager class
-        // Your loop will need to be able to ask someone
-        // if you've received all the packets, and can thus
-        // terminate. You might have a method like
-        // PacketManager.allPacketsReceived() that you could
-        // call for that, but there are a bunch of possible
-        // ways.
-	}
+                try {
+			//Get IP address associated with the server name
+                        this.server = InetAddress.getByName(server);
+                } catch(UnknownHostException e) {
+                        e.printStackTrace();
+                }
+        }
 
-}
+	public void downloadFiles() throws IOException {
+		//Create instance of packetManager
+		PacketManager packetManager = new PacketManager();
+		// Create socket
+		DatagramSocket socket = new DatagramSocket();
+
+		try {
+			//Create byte buffer
+			byte[] buf = new byte[1028];
+			//Create empty datagram packet to send to server
+			DatagramPacket packet = new DatagramPacket(buf, buf.length, server, port);
+
+			//Send empty packet so sever
+			//This tells the server to start sending files to us
+			socket.send(packet);
+		} catch(IOException e) {
+			e.printStackTrace();
+		}
+		
+		//While loop to keep receiving packets from the server until we have received all the files
+		while(!packetManager.haveAllFiles()){	
+			byte[] data = new byte[1028];
+			DatagramPacket packet = new DatagramPacket(data, 1028);
+			socket.receive(packet);
+			packetManager.addPacket(packet);
+		}
+		//Once while loop has completed, write all the files to disk
+		packetManager.writeAllFiles();
+	}
+}	
